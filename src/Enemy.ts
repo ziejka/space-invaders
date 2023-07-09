@@ -48,13 +48,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   shoot() {
-    new EnemyLaser(
-      this.scene,
-      this.x,
-      this.y + this.height,
-      AssetName.Sprites,
-      SpriteName.EnemyLaser,
-    );
+    new EnemyLaser(this.scene, this.x, this.y + this.height);
   }
 
   update(time: number, delta: number) {

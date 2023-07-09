@@ -1,7 +1,13 @@
 import * as Phaser from "phaser";
 import { HeroLaser } from "./HeroLaser";
 import { getMoveDistance } from "./utils";
-import { AnimationName, AssetName, EventName, GameObjectName, SpriteName } from "./names";
+import {
+  AnimationName,
+  AssetName,
+  EventName,
+  GameObjectName,
+  SpriteName,
+} from "./names";
 
 export class Hero extends Phaser.GameObjects.Sprite {
   private moveSpeed: number;
@@ -18,7 +24,7 @@ export class Hero extends Phaser.GameObjects.Sprite {
     scene.add.existing(this);
     this.setInteractive();
     this.setOrigin(0.5);
-    this.moveSpeed = 5;
+    this.moveSpeed = 10;
     this.setScale(4, 4);
     this.setName(GameObjectName.Hero);
   }
@@ -50,13 +56,7 @@ export class Hero extends Phaser.GameObjects.Sprite {
       Phaser.Input.Keyboard.KeyCodes.SPACE,
     );
     if (!this.laser?.active && Phaser.Input.Keyboard.JustDown(spacebar)) {
-      this.laser = new HeroLaser(
-        this.scene,
-        this.x,
-        this.y - this.height,
-        AssetName.Sprites,
-        SpriteName.HeroLaser,
-      );
+      this.laser = new HeroLaser(this.scene, this.x, this.y - this.height);
     }
   }
 

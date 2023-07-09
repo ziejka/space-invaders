@@ -1,19 +1,13 @@
 import * as Phaser from "phaser";
-import { getMoveDistance } from "./utils";
-import { GameObjectName } from "./names";
+import { getMoveDistance, isIntersecting } from "./utils";
+import { AssetName, GameObjectName, SpriteName } from "./names";
 import { Enemy } from "./Enemy";
 
 export class HeroLaser extends Phaser.GameObjects.Sprite {
   private moveSpeed: number = 15;
 
-  constructor(
-    scene: Phaser.Scene,
-    x: number,
-    y: number,
-    texture: string | Phaser.Textures.Texture,
-    frame?: string | number,
-  ) {
-    super(scene, x, y, texture, frame);
+  constructor(scene: Phaser.Scene, x: number, y: number) {
+    super(scene, x, y, AssetName.Sprites, SpriteName.HeroLaser);
     scene.add.existing(this);
     this.setOrigin(0.5);
     this.setScale(4, 4);
@@ -35,16 +29,8 @@ export class HeroLaser extends Phaser.GameObjects.Sprite {
       GameObjectName.Enemies,
     ) as Phaser.GameObjects.Container;
 
-    const laserBounds = this.getBounds();
     enemies.each((enemy: Enemy) => {
-      const enemyBounds = enemy.getBounds();
-
-      if (
-        laserBounds.centerX >= enemyBounds.left &&
-        laserBounds.centerX <= enemyBounds.right &&
-        laserBounds.centerY >= enemyBounds.top &&
-        laserBounds.centerY <= enemyBounds.bottom
-      ) {
+      if (isIntersecting(this, enemy)) {
         enemy.kill();
         this.destroy();
       }
