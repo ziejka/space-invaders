@@ -1,47 +1,76 @@
-import * as Phaser from 'phaser';
+import * as Phaser from "phaser";
+import { EnemiesContainer } from "./EnemiesContainer";
+import { Hero } from "./Hero";
+import { UI } from "./UI";
+import { AnimationName, AssetName, EventName, SceneName } from "./names";
 
-export default class Demo extends Phaser.Scene
-{
-    constructor ()
-    {
-        super('demo');
+export default class Game extends Phaser.Scene {
+  constructor() {
+    super(SceneName.Game);
+  }
+
+  preload() {
+    this.load.atlas(
+      AssetName.Sprites,
+      "assets/SpaceInvaders.png",
+      "assets/sprites.json",
+    );
+  }
+
+  private createAnimations() {
+    for (let i = 0; i < 5; i++) {
+      const prefix = `enemy${i}`;
+      this.anims.create({
+        key: prefix,
+        frames: this.anims.generateFrameNames(AssetName.Sprites, {
+          prefix: prefix,
+          end: 1,
+        }),
+        frameRate: 2,
+        repeat: -1,
+      });
     }
 
-    preload ()
-    {
-        this.load.image('logo', 'assets/phaser3-logo.png');
-        this.load.image('libs', 'assets/libs.png');
-        this.load.glsl('bundle', 'assets/plasma-bundle.glsl.js');
-        this.load.glsl('stars', 'assets/starfields.glsl.js');
-    }
+    this.anims.create({
+      key: AnimationName.Explode,
+      frames: this.anims.generateFrameNames(AssetName.Sprites, {
+        prefix: "explode",
+        end: 2,
+      }),
+      frameRate: 8,
+    });
+  }
 
-    create ()
-    {
-        this.add.shader('RGB Shift Field', 0, 0, 800, 600).setOrigin(0);
+  create() {
+    this.createAnimations();
 
-        this.add.shader('Plasma', 0, 412, 800, 172).setOrigin(0);
+    new UI(this);
+    new EnemiesContainer(this);
 
-        this.add.image(400, 300, 'libs');
+    this.events.on(EventName.StartGame, () => {
+      // if you won the game you'll have 2 ships for next round
+      new Hero(this);
+    });
+  }
 
-        const logo = this.add.image(400, 70, 'logo');
-
-        this.tweens.add({
-            targets: logo,
-            y: 350,
-            duration: 1500,
-            ease: 'Sine.inOut',
-            yoyo: true,
-            repeat: -1
-        })
-    }
+  update(time: number, delta: number): void {
+    this.children.each((child) => {
+      child.update(time, delta);
+    });
+  }
 }
 
-const config = {
-    type: Phaser.AUTO,
-    backgroundColor: '#125555',
-    width: 800,
-    height: 600,
-    scene: Demo
+const config: Phaser.Types.Core.GameConfig = {
+  type: Phaser.AUTO,
+  backgroundColor: "#000000",
+  width: window.innerWidth,
+  height: window.innerHeight,
+  pixelArt: true,
+  scale: {
+    mode: Phaser.Scale.RESIZE,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  scene: Game,
 };
 
 const game = new Phaser.Game(config);
