@@ -1,6 +1,6 @@
 # Space invaders with Phaser 3 TypeScript
+![capture](https://github.com/ziejka/space-invaders/assets/7802772/a4f86e18-c3f3-4d32-9470-8b86ceb77e98)
 
-This quick-start project template combines Phaser 3.60 with [TypeScript 5](https://www.typescriptlang.org/) and uses [Rollup](https://rollupjs.org) for bundling.
 
 ## Requirements
 
